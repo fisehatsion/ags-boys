@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>A/G/S Boys</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+body{
+margin:0;
+font-family:monospace;
+background:black;
+color:#00ff00;
+overflow-x:hidden;
+}
+canvas{
+position:fixed;
+top:0;
+left:0;
+z-index:-1;
+}
+.box{text-align:center;margin-top:70px;}
+input,button{
+padding:8px;
+margin:5px;
+background:black;
+color:#00ff00;
+border:1px solid #00ff00;
+font-family:monospace;
+}
+button:hover{background:#003300;cursor:pointer;}
+.card{
+border:1px solid #00ff00;
+padding:10px;
+margin:10px auto;
+width:220px;
+}
+.rectangle{
+width:200px;
+height:50px;
+font-size:18px;
+}
+#homePage,#specialPage,#chatPage,#chatRoom{display:none;}
+.chatArea{
+width:80%;
+height:200px;
+background:black;
+color:#00ff00;
+border:1px solid #00ff00;
+overflow:auto;
+margin:10px auto;
+padding:5px;
+}
+</style>
+</head>
+<body>
+
+<canvas id="matrix"></canvas>
+
+<!-- LOGIN -->
+<div class="box" id="loginPage">
+<h1>A/G/S Boys</h1>
+<input type="password" id="passwordBox" placeholder="Enter Password">
+<br>
+<button onclick="login()">Access</button>
+<p id="msg"></p>
+</div>
+
+<!-- HOME -->
+<div class="box" id="homePage">
+<h2>Friends Online</h2>
+<p id="userId"></p>
+<div id="friendList"></div>
+
+<button onclick="toggleAdd()">Add Friend</button>
+<button onclick="goSpecial()">Special</button>
+<button class="rectangle" onclick="goChat()">CHAT</button>
+
+<div id="addSection" style="display:none;">
+<h3>Add Friend</h3>
+<input id="newName" placeholder="Name">
+<input id="newNumber" placeholder="Number">
+<button onclick="addFriend()">Add</button>
+
+<h3>Add Film Link</h3>
+<input id="filmLink" placeholder="Film Link">
+<button onclick="addFilm()">Add</button>
+</div>
+</div>
+
+<!-- SPECIAL -->
+<div class="box" id="specialPage">
+<h2>Films</h2>
+<input id="searchBox" placeholder="Search..." onkeyup="searchFilm()">
+<div id="filmList"></div>
+<button onclick="goHome()">Back</button>
+</div>
+
+<!-- CHAT PAGE -->
+<div class="box" id="chatPage">
+<h2>Chat System</h2>
+<button onclick="enterGroup()">1️⃣ Group Chat</button>
+<button onclick="enterPrivate()">2️⃣ Private Chat</button>
+<button onclick="enterFree()">3️⃣ Free Chat</button>
+<br><br>
+<button onclick="goHome()">Back</button>
+</div>
+
+<!-- CHAT ROOM -->
+<div class="box" id="chatRoom">
+<h2 id="chatTitle"></h2>
+<div class="chatArea" id="messages"></div>
+<input id="chatInput" placeholder="Type message">
+<button onclick="sendMessage()">Send</button>
+<br><br>
+<button onclick="leaveChat()">Exit Chat</button>
+</div>
+
+<script>
+
+/* MATRIX BACKGROUND */
+let canvas=document.getElementById("matrix");
+let ctx=canvas.getContext("2d");
+canvas.height=window.innerHeight;
+canvas.width=window.innerWidth;
+let letters="AGSBoys0123456789".split("");
+let fontSize=14;
+let columns=canvas.width/fontSize;
+let drops=[];
+for(let x=0;x<columns;x++)drops[x]=1;
+function draw(){
+ctx.fillStyle="rgba(0,0,0,0.05)";
+ctx.fillRect(0,0,canvas.width,canvas.height);
+ctx.fillStyle="#0f0";
+ctx.font=fontSize+"px monospace";
+for(let i=0;i<drops.length;i++){
+let text=letters[Math.floor(Math.random()*letters.length)];
+ctx.fillText(text,i*fontSize,drops[i]*fontSize);
+if(drops[i]*fontSize>canvas.height&&Math.random()>0.975)drops[i]=0;
+drops[i]++;
+}}
+setInterval(draw,33);
+
+/* MAIN SYSTEM */
+let mainPassword="faimse@123";
+
+let friends=[
+{name:"fiseha",number:"0922986741"},
+{name:"merawi",number:"0900044774"},
+{name:"kidus a",number:"0910003855"},
+{name:"marken",number:"0904306090"},
+{name:"natanim demsew",number:"0920607048"},
+{name:"mikias tizazu",number:"0913269364"},
+{name:"addis",number:"0913424637"},
+{name:"bakes",number:"0982223246"},
+{name:"pineal",number:"0911254265"},
+{name:"eyosiyas",number:"0946395152"},
+{name:"yafet abraham",number:"0996649990"},
+{name:"muse",number:"0913310424"},
+{name:"ezana",number:"0911983651"},
+{name:"aelaf",number:"0911417142"}
+];
+
+let films=[];
+let currentChat="";
+
+/* LOGIN */
+function login(){
+let pass=document.getElementById("passwordBox").value;
+if(pass===mainPassword){
+document.getElementById("loginPage").style.display="none";
+document.getElementById("homePage").style.display="block";
+if(!localStorage.getItem("agsID")){
+let id="AGS"+Math.floor(Math.random()*10000);
+localStorage.setItem("agsID",id);
+alert("Your ID: "+id);
+}
+document.getElementById("userId").innerText="Your ID: "+localStorage.getItem("agsID");
+showFriends();
+}else{document.getElementById("msg").innerText="Wrong Password";}
+}
+
+/* FRIENDS */
+function showFriends(){
+let list=document.getElementById("friendList");
+list.innerHTML="";
+friends.forEach((f,i)=>{
+list.innerHTML+=`<div class="card" onclick="showNumber(${i})">${f.name}</div>`;
+});
+}
+
+function showNumber(i){
+let ask=prompt("Re-enter main password:");
+if(ask===mainPassword){alert("Number: "+friends[i].number);}
+else{alert("Wrong password");}
+}
+
+/* ADD */
+function toggleAdd(){
+let s=document.getElementById("addSection");
+s.style.display=s.style.display==="none"?"block":"none";
+}
+
+function addFriend(){
+let n=document.getElementById("newName").value;
+let num=document.getElementById("newNumber").value;
+if(n&&num){friends.push({name:n,number:num});showFriends();}
+}
+
+function addFilm(){
+let link=document.getElementById("filmLink").value;
+if(link){films.push(link);}
+}
+
+/* SPECIAL */
+function goSpecial(){
+document.getElementById("homePage").style.display="none";
+document.getElementById("specialPage").style.display="block";
+showFilms();
+}
+
+function goHome(){
+document.getElementById("specialPage").style.display="none";
+document.getElementById("chatPage").style.display="none";
+document.getElementById("homePage").style.display="block";
+}
+
+function showFilms(){
+let list=document.getElementById("filmList");
+list.innerHTML="";
+films.forEach(f=>{
+list.innerHTML+=`<div class="card"><a href="${f}" target="_blank" style="color:#0f0">${f}</a></div>`;
+});
+}
+
+function searchFilm(){
+let val=document.getElementById("searchBox").value.toLowerCase();
+let list=document.getElementById("filmList");
+list.innerHTML="";
+films.filter(f=>f.toLowerCase().includes(val))
+.forEach(f=>{
+list.innerHTML+=`<div class="card"><a href="${f}" target="_blank" style="color:#0f0">${f}</a></div>`;
+});
+}
+
+/* CHAT */
+function goChat(){
+document.getElementById("homePage").style.display="none";
+document.getElementById("chatPage").style.display="block";
+}
+
+function enterGroup(){
+let pass=prompt("Enter Group Password:");
+if(pass){currentChat="group";openChat("Group Chat");}
+}
+
+function enterPrivate(){
+let pass=prompt("Enter Private Password:");
+if(pass){currentChat="private";openChat("Private Chat");}
+}
+
+function enterFree(){
+currentChat="free";openChat("Free Chat");
+}
+
+function openChat(title){
+document.getElementById("chatPage").style.display="none";
+document.getElementById("chatRoom").style.display="block";
+document.getElementById("chatTitle").innerText=title;
+loadMessages();
+}
+
+function sendMessage(){
+let msg=document.getElementById("chatInput").value;
+if(msg){
+let all=JSON.parse(localStorage.getItem(currentChat)||"[]");
+all.push(localStorage.getItem("agsID")+": "+msg);
+localStorage.setItem(currentChat,JSON.stringify(all));
+document.getElementById("chatInput").value="";
+loadMessages();
+}
+}
+
+function loadMessages(){
+let area=document.getElementById("messages");
+area.innerHTML="";
+let all=JSON.parse(localStorage.getItem(currentChat)||"[]");
+all.forEach(m=>{area.innerHTML+=m+"<br>";});
+}
+
+function leaveChat(){
+document.getElementById("chatRoom").style.display="none";
+document.getElementById("chatPage").style.display="block";
+}
+
+</script>
+</body>
+</html>
