@@ -76,4 +76,218 @@ input{padding:8px;margin:5px;}
 <p>ID: <span id="userID"></span></p>
 <p>Password: <span id="userPass"></span></p>
 <input id="newID" placeholder="Change ID Name">
-<input id="newPass"
+<input id="newPass" placeholder="Change Password">
+<button onclick="changeIDPass()">Update</button>
+<br><br>
+<button onclick="backHome()">Back</button>
+</div>
+
+<!-- GROUP CHAT PAGE -->
+<div id="groupPage">
+<h2>Group Chat</h2>
+<input id="groupName" placeholder="Group Name">
+<input id="groupPass" placeholder="Group Password">
+<input id="groupMembers" placeholder="Friend IDs (comma)">
+<button onclick="createGroup()">Create Group</button>
+<div id="groupList"></div>
+<br>
+<button onclick="backHome()">Back</button>
+</div>
+
+<!-- PRIVATE CHAT PAGE -->
+<div id="privatePage">
+<h2>Private Chat (2 people)</h2>
+<input id="privateFriend" placeholder="Friend ID">
+<input id="privatePass" placeholder="Private Password">
+<button onclick="createPrivate()">Create Chat</button>
+<div id="privateList"></div>
+<br>
+<button onclick="backHome()">Back</button>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+<script>
+// 🔹 REPLACE THIS BLOCK with YOUR Firebase Config
+const firebaseConfig = {
+  apiKey: "PASTE_YOUR_API_KEY",
+  authDomain: "PASTE_YOUR_PROJECT.firebaseapp.com",
+  databaseURL: "PASTE_YOUR_DATABASE_URL",
+  projectId: "PASTE_YOUR_PROJECT_ID",
+  storageBucket: "PASTE_YOUR_PROJECT.appspot.com",
+  messagingSenderId: "PASTE_YOUR_SENDER_ID",
+  appId: "PASTE_YOUR_APP_ID"
+};
+// 🔹 Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+// 🔹 Global Variables
+let currentUserID = "";
+let friendsData = {
+  "fiseha":"0922986741",
+  "merawi":"0900044774",
+  "kidus a":"0910003855",
+  "marken":"0904306090",
+  "natanim demsew":"0920607048",
+  "mikias tizazu":"0913269364",
+  "addis":"0913424637",
+  "bakes":"0982223246",
+  "pineal":"0911254265",
+  "eyosiyas":"0946395152",
+  "yafet abraham":"0996649990",
+  "muse":"0913310424",
+  "ezana":"0911983651",
+  "aelaf":"0911417142"
+};
+
+// 🔹 LOGIN
+function login(){
+  const pass = document.getElementById("password").value;
+  if(pass==="faimse@123"){
+    document.getElementById("login").style.display="none";
+    document.getElementById("home").style.display="block";
+    initUser();
+    loadFriends();
+    loadMessages();
+    loadFilms();
+    loadInvites();
+  } else {alert("Wrong password!")}
+}
+
+// 🔹 LOGIN ON ENTER KEY
+document.getElementById("password").addEventListener("keyup", function(event) {
+  if (event.key === "Enter") {
+    login();
+  }
+});
+
+// 🔹 INIT USER ID
+function initUser(){
+  if(!currentUserID){
+    currentUserID="user_"+Date.now();
+    db.ref("users/"+currentUserID).set({password:"faimse@123",name:currentUserID});
+  }
+  document.getElementById("userID").innerText=currentUserID;
+  document.getElementById("userPass").innerText="faimse@123";
+}
+
+// 🔹 LOAD FRIENDS
+function loadFriends(){
+  let fDiv = document.getElementById("friends");
+  fDiv.innerHTML="";
+  for(let name in friendsData){
+    let d = document.createElement("div");
+    d.className="friend online";
+    d.innerText=name;
+    d.onclick=function(){
+      let p=prompt("Enter password to see number:");
+      if(p==="faimse@123"){alert(friendsData[name])}
+    }
+    fDiv.appendChild(d);
+  }
+}
+
+// 🔹 SHOW PAGES
+function backHome(){
+  ["home","chatPage","specialPage","mailPage","idPage","groupPage","privatePage"].forEach(p=>document.getElementById(p).style.display="none");
+  document.getElementById("home").style.display="block";
+}
+function openChat(){document.getElementById("home").style.display="none";document.getElementById("chatPage").style.display="block";}
+function openSpecial(){document.getElementById("home").style.display="none";document.getElementById("specialPage").style.display="block";}
+function openMail(){document.getElementById("home").style.display="none";document.getElementById("mailPage").style.display="block";}
+function openID(){document.getElementById("home").style.display="none";document.getElementById("idPage").style.display="block";}
+function openGroup(){document.getElementById("home").style.display="none";document.getElementById("groupPage").style.display="block";}
+function openPrivate(){document.getElementById("home").style.display="none";document.getElementById("privatePage").style.display="block";}
+
+// 🔹 PUBLIC CHAT
+function loadMessages(){
+  const msgDiv=document.getElementById("messages");
+  db.ref("messages").on("value",snap=>{
+    msgDiv.innerHTML="";
+    snap.forEach(c=>{
+      let m=document.createElement("div");
+      m.innerText=c.val().sender+": "+c.val().text;
+      msgDiv.appendChild(m);
+    })
+  });
+}
+function sendMessage(){
+  const t=document.getElementById("msg").value;
+  if(t!=""){
+    db.ref("messages").push({sender:currentUserID,text:t});
+    document.getElementById("msg").value="";
+  }
+}
+
+// 🔹 FILMS
+function loadFilms(){
+  const fDiv=document.getElementById("films");
+  db.ref("films").on("value",snap=>{
+    fDiv.innerHTML="";
+    snap.forEach(c=>{
+      let d=document.createElement("div");
+      d.innerHTML=`<a href="${c.val().link}" target="_blank">${c.val().link}</a>`;
+      fDiv.appendChild(d);
+    })
+  });
+}
+function addFilm(){
+  const link=document.getElementById("filmLink").value;
+  if(link!=""){db.ref("films").push({link:link});document.getElementById("filmLink").value="";}
+}
+function filterFilms(){
+  const s=document.getElementById("searchFilm").value.toLowerCase();
+  document.querySelectorAll("#films div").forEach(d=>{
+    d.style.display=d.innerText.toLowerCase().includes(s)?"block":"none";
+  });
+}
+
+// 🔹 MAIL
+function loadInvites(){
+  const iDiv=document.getElementById("inviteList");
+  db.ref("invites").on("value",snap=>{
+    iDiv.innerHTML="";
+    snap.forEach(c=>{
+      let d=document.createElement("div");
+      d.innerText=c.val().from+" -> "+c.val().to+" : "+c.val().type;
+      iDiv.appendChild(d);
+    })
+  });
+}
+function sendInvite(){
+  const to=document.getElementById("inviteFriend").value;
+  if(to!=""){db.ref("invites").push({from:currentUserID,to:to,type:"chat invite"});}
+}
+
+// 🔹 ID PAGE
+function changeIDPass(){
+  const newID=document.getElementById("newID").value;
+  const newPass=document.getElementById("newPass").value;
+  if(newID!=""){currentUserID=newID;document.getElementById("userID").innerText=currentUserID;}
+  if(newPass!=""){document.getElementById("userPass").innerText=newPass;}
+}
+
+// 🔹 GROUP CHAT
+function createGroup(){
+  const gName=document.getElementById("groupName").value;
+  const gPass=document.getElementById("groupPass").value;
+  const gMembers=document.getElementById("groupMembers").value.split(",");
+  if(gName!="" && gPass!="" && gMembers.length>0){
+    db.ref("groups").push({name:gName,password:gPass,members:gMembers,creator:currentUserID});
+    document.getElementById("groupName").value="";
+    document.getElementById("groupPass").value="";
+    document.getElementById("groupMembers").value="";
+  }
+}
+
+// 🔹 PRIVATE CHAT
+function createPrivate(){
+  const friend=document.getElementById("privateFriend").value;
+  const pPass=document.getElementById("privatePass").value;
+  if(friend!="" && pPass!=""){db.ref("privateChats").push({members:[currentUserID,friend],password:pPass,creator:currentUserID});document.getElementById("privateFriend").value="";document.getElementById("privatePass").value="";}
+}
+</script>
+
+</body>
+</html>
