@@ -2,292 +2,287 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>A/G/S Boys V2</title>
+<title>AGS Boys V4.1</title>
 <style>
-body {background:black;color:#00ff9c;font-family:monospace;text-align:center;}
-h1,h2{margin:10px;}
-button{background:#001f1f;color:#00ff9c;border:1px solid #00ff9c;padding:10px;margin:5px;cursor:pointer;}
-input{padding:8px;margin:5px;}
-#home,#chatPage,#specialPage,#mailPage,#idPage,#groupPage,#privatePage{display:none;}
-.friend{cursor:pointer;padding:8px;border-bottom:1px solid #00ff9c;}
-#messages,#films,#inviteList,#userList,#groupList,#privateList{max-height:300px;overflow:auto;text-align:left;margin:auto;width:90%;border:1px solid #00ff9c;padding:5px;}
-.online{color:#ff0;}
+body {background:black;color:#00ff9c;font-family:monospace;text-align:center;margin:0;}
+button {background:#001f1f;color:#00ff9c;border:1px solid #00ff9c;padding:10px;margin:5px;cursor:pointer;}
+input {padding:8px;margin:5px;}
+.page {display:none;}
+.box{height:300px;overflow:auto;border:1px solid #00ff9c;margin:10px;padding:5px;}
+.friend{cursor:pointer;padding:5px;border-bottom:1px solid #00ff9c;}
 </style>
 </head>
 <body>
 
-<h1>A/G/S Boys V2</h1>
+<h1>AGS BOYS</h1>
 
 <!-- LOGIN -->
-<div id="login">
-<input id="password" placeholder="Enter Password">
+<div id="login" class="page" style="display:block">
+<input id="pass" placeholder="Enter password"><br>
 <button onclick="login()">Enter</button>
 </div>
 
 <!-- HOME -->
-<div id="home">
-<h2>Friends Online</h2>
-<div id="friends"></div>
-<br>
-<button onclick="showAdd()">Add</button>
-<button onclick="openSpecial()">Special</button>
-<button onclick="openChat()">Chat</button>
-<button onclick="openMail()">Mail</button>
-<button onclick="openID()">My ID</button>
-<button onclick="openGroup()">Group Chat</button>
-<button onclick="openPrivate()">Private Chat</button>
+<div id="home" class="page">
+<h3>Coins: <span id="coinCount">0</span></h3>
+<div id="friends"></div><br>
+<button onclick="openPage('chat')">Public Chat</button>
+<button onclick="openPage('private')">Private Chat</button>
+<button onclick="openPage('games')">Games</button>
+<button onclick="openPage('store')">Store</button>
+<button onclick="openPage('bank')">Bank</button>
+<button onclick="openPage('mail')">Mail</button>
+<button onclick="openPage('special')">Special</button>
+<button onclick="addFriend()">Add Friend</button>
+<button onclick="addLink()">Add Link</button>
 </div>
 
-<!-- CHAT PAGE -->
-<div id="chatPage">
+<!-- PUBLIC CHAT -->
+<div id="chat" class="page">
 <h2>Public Chat</h2>
-<div id="messages"></div>
-<input id="msg" placeholder="Write message">
-<button onclick="sendMessage()">Send</button>
-<br><br>
-<button onclick="backHome()">Back</button>
+<div id="messages" class="box"></div>
+<input id="msg" placeholder="Message">
+<button onclick="sendMessage()">Send</button><br><br>
+<button onclick="openPage('home')">Back</button>
 </div>
 
-<!-- SPECIAL PAGE -->
-<div id="specialPage">
-<h2>Films</h2>
-<input id="searchFilm" placeholder="Search film" oninput="filterFilms()">
-<br><br>
-<input id="filmLink" placeholder="Add film link">
-<button onclick="addFilm()">Add</button>
-<div id="films"></div>
-<br>
-<button onclick="backHome()">Back</button>
+<!-- PRIVATE CHAT -->
+<div id="private" class="page">
+<h2>Private Chat</h2>
+<select id="friendSelect"></select><br>
+<div id="privateMessages" class="box"></div>
+<input id="privateMsg" placeholder="Message">
+<button onclick="sendPrivate()">Send</button><br><br>
+<button onclick="openPage('home')">Back</button>
 </div>
 
-<!-- MAIL PAGE -->
-<div id="mailPage">
-<h2>Invites</h2>
-<div id="inviteList"></div>
-<input id="inviteFriend" placeholder="Friend ID">
-<button onclick="sendInvite()">Send Invite</button>
-<br><br>
-<button onclick="backHome()">Back</button>
+<!-- GAMES -->
+<div id="games" class="page">
+<h2>Mind Games</h2>
+<div id="gameLog" class="box"></div>
+<button onclick="playGame()">Play Game (+10 coins)</button><br><br>
+<button onclick="openPage('home')">Back</button>
 </div>
 
-<!-- ID PAGE -->
-<div id="idPage">
-<h2>My ID & Password</h2>
-<p>ID: <span id="userID"></span></p>
-<p>Password: <span id="userPass"></span></p>
-<input id="newID" placeholder="Change ID Name">
-<input id="newPass" placeholder="Change Password">
-<button onclick="changeIDPass()">Update</button>
-<br><br>
-<button onclick="backHome()">Back</button>
+<!-- STORE -->
+<div id="store" class="page">
+<h2>Store</h2>
+<div id="storeLog" class="box"></div>
+<button onclick="buy(100,'Game AI Bot')">Game AI Bot (100 coins)</button>
+<button onclick="buy(300,'AI Chat Helper')">AI Chat Helper (300 coins)</button>
+<button onclick="buy(500,'AI Film Search')">AI Film Search (500 coins)</button>
+<button onclick="buy(1000,'AI Chat System')">AI Chat System (1000 coins)</button><br><br>
+<button onclick="openPage('home')">Back</button>
 </div>
 
-<!-- GROUP CHAT PAGE -->
-<div id="groupPage">
-<h2>Group Chat</h2>
-<input id="groupName" placeholder="Group Name">
-<input id="groupPass" placeholder="Group Password">
-<input id="groupMembers" placeholder="Friend IDs (comma)">
-<button onclick="createGroup()">Create Group</button>
-<div id="groupList"></div>
-<br>
-<button onclick="backHome()">Back</button>
+<!-- BANK -->
+<div id="bank" class="page">
+<h2>Bank</h2>
+<div id="bankLog" class="box"></div>
+<button onclick="borrow(50)">Borrow 50 coins</button>
+<button onclick="pay(50)">Pay 50 coins</button><br><br>
+<button onclick="openPage('home')">Back</button>
 </div>
 
-<!-- PRIVATE CHAT PAGE -->
-<div id="privatePage">
-<h2>Private Chat (2 people)</h2>
-<input id="privateFriend" placeholder="Friend ID">
-<input id="privatePass" placeholder="Private Password">
-<button onclick="createPrivate()">Create Chat</button>
-<div id="privateList"></div>
-<br>
-<button onclick="backHome()">Back</button>
+<!-- MAIL -->
+<div id="mail" class="page">
+<h2>Mail</h2>
+<div id="mailBox" class="box"></div><br>
+<button onclick="openPage('home')">Back</button>
+</div>
+
+<!-- SPECIAL FILMS -->
+<div id="special" class="page">
+<h2>Special Films</h2>
+<input id="searchFilm" placeholder="Search film">
+<button onclick="searchFilm()">Search</button>
+<div id="filmBox" class="box"></div><br>
+<button onclick="openPage('home')">Back</button>
 </div>
 
 <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+
 <script>
-// 🔹 REPLACE THIS BLOCK with YOUR Firebase Config
-const firebaseConfig = {
-  apiKey: "PASTE_YOUR_API_KEY",
-  authDomain: "PASTE_YOUR_PROJECT.firebaseapp.com",
-  databaseURL: "PASTE_YOUR_DATABASE_URL",
-  projectId: "PASTE_YOUR_PROJECT_ID",
-  storageBucket: "PASTE_YOUR_PROJECT.appspot.com",
-  messagingSenderId: "PASTE_YOUR_SENDER_ID",
-  appId: "PASTE_YOUR_APP_ID"
+// ==== FIREBASE CONFIG ====
+// Replace with your project Firebase config
+const firebaseConfig={
+apiKey:"PASTE",
+authDomain:"PASTE",
+databaseURL:"PASTE",
+projectId:"PASTE",
+storageBucket:"PASTE",
+messagingSenderId:"PASTE",
+appId:"PASTE"
 };
-// 🔹 Initialize Firebase
-firebase.initializeApp(firebaseConfig);
-const db = firebase.database();
+firebase.initializeApp(firebaseConfig)
+const db=firebase.database()
 
-// 🔹 Global Variables
-let currentUserID = "";
-let friendsData = {
-  "fiseha":"0922986741",
-  "merawi":"0900044774",
-  "kidus a":"0910003855",
-  "marken":"0904306090",
-  "natanim demsew":"0920607048",
-  "mikias tizazu":"0913269364",
-  "addis":"0913424637",
-  "bakes":"0982223246",
-  "pineal":"0911254265",
-  "eyosiyas":"0946395152",
-  "yafet abraham":"0996649990",
-  "muse":"0913310424",
-  "ezana":"0911983651",
-  "aelaf":"0911417142"
-};
+// ==== GLOBAL VARIABLES ====
+let user="user_"+Math.floor(Math.random()*100000)
+let coins=0
+const friendsData={
+"fiseha":"0922986741","merawi":"0900044774","kidus":"0910003855","marken":"0904306090",
+"natanim":"0920607048","mikias":"0913269364","addis":"0913424637","bakes":"0982223246",
+"pineal":"0911254265","eyosiyas":"0946395152","yafet":"0996649990","muse":"0913310424",
+"ezana":"0911983651","aelaf":"0911417142"
+}
 
-// 🔹 LOGIN
+// ==== LOGIN SYSTEM ====
 function login(){
-  const pass = document.getElementById("password").value;
-  if(pass==="faimse@123"){
-    document.getElementById("login").style.display="none";
-    document.getElementById("home").style.display="block";
-    initUser();
-    loadFriends();
-    loadMessages();
-    loadFilms();
-    loadInvites();
-  } else {alert("Wrong password!")}
+const pass=document.getElementById("pass").value
+if(pass==="faimse@123"){
+openPage("home")
+db.ref("users/"+user).set({coins:0,id:user})
+loadFriends()
+loadCoins()
+loadMessages()
+loadPrivateFriends()
+loadMail()
+}else{alert("Try again")}
 }
 
-// 🔹 LOGIN ON ENTER KEY
-document.getElementById("password").addEventListener("keyup", function(event) {
-  if (event.key === "Enter") {
-    login();
-  }
-});
-
-// 🔹 INIT USER ID
-function initUser(){
-  if(!currentUserID){
-    currentUserID="user_"+Date.now();
-    db.ref("users/"+currentUserID).set({password:"faimse@123",name:currentUserID});
-  }
-  document.getElementById("userID").innerText=currentUserID;
-  document.getElementById("userPass").innerText="faimse@123";
+// ==== PAGE SWITCH ====
+function openPage(id){
+document.querySelectorAll(".page").forEach(p=>p.style.display="none")
+document.getElementById(id).style.display="block"
 }
 
-// 🔹 LOAD FRIENDS
+// ==== FRIEND LIST ====
 function loadFriends(){
-  let fDiv = document.getElementById("friends");
-  fDiv.innerHTML="";
-  for(let name in friendsData){
-    let d = document.createElement("div");
-    d.className="friend online";
-    d.innerText=name;
-    d.onclick=function(){
-      let p=prompt("Enter password to see number:");
-      if(p==="faimse@123"){alert(friendsData[name])}
-    }
-    fDiv.appendChild(d);
-  }
+let f=document.getElementById("friends")
+f.innerHTML=""
+for(let name in friendsData){
+let d=document.createElement("div")
+d.className="friend"
+d.innerText=name
+d.onclick=function(){
+let p=prompt("Enter password")
+if(p==="faimse@123"){ alert("Phone: "+friendsData[name]) }
+else{ alert("Try again") }
+}
+f.appendChild(d)
+}}
+function addFriend(){alert("Add Friend - Feature Active")}
+function addLink(){alert("Add Link - Feature Active")}
+
+// ==== COINS ====
+function loadCoins(){
+db.ref("users/"+user+"/coins").on("value",snap=>{
+coins=snap.val()||0
+document.getElementById("coinCount").innerText=coins
+})
 }
 
-// 🔹 SHOW PAGES
-function backHome(){
-  ["home","chatPage","specialPage","mailPage","idPage","groupPage","privatePage"].forEach(p=>document.getElementById(p).style.display="none");
-  document.getElementById("home").style.display="block";
-}
-function openChat(){document.getElementById("home").style.display="none";document.getElementById("chatPage").style.display="block";}
-function openSpecial(){document.getElementById("home").style.display="none";document.getElementById("specialPage").style.display="block";}
-function openMail(){document.getElementById("home").style.display="none";document.getElementById("mailPage").style.display="block";}
-function openID(){document.getElementById("home").style.display="none";document.getElementById("idPage").style.display="block";}
-function openGroup(){document.getElementById("home").style.display="none";document.getElementById("groupPage").style.display="block";}
-function openPrivate(){document.getElementById("home").style.display="none";document.getElementById("privatePage").style.display="block";}
-
-// 🔹 PUBLIC CHAT
-function loadMessages(){
-  const msgDiv=document.getElementById("messages");
-  db.ref("messages").on("value",snap=>{
-    msgDiv.innerHTML="";
-    snap.forEach(c=>{
-      let m=document.createElement("div");
-      m.innerText=c.val().sender+": "+c.val().text;
-      msgDiv.appendChild(m);
-    })
-  });
-}
+// ==== PUBLIC CHAT ====
 function sendMessage(){
-  const t=document.getElementById("msg").value;
-  if(t!=""){
-    db.ref("messages").push({sender:currentUserID,text:t});
-    document.getElementById("msg").value="";
-  }
+let t=document.getElementById("msg").value
+if(t==="") return
+db.ref("messages").push({user:user,text:t,time:Date.now()})
+document.getElementById("msg").value=""
+}
+function loadMessages(){
+const msgDiv=document.getElementById("messages")
+db.ref("messages").on("child_added",snap=>{
+const m=snap.val()
+let d=document.createElement("div")
+d.innerText=m.user+" : "+m.text
+msgDiv.appendChild(d)
+msgDiv.scrollTop=msgDiv.scrollHeight
+})
 }
 
-// 🔹 FILMS
-function loadFilms(){
-  const fDiv=document.getElementById("films");
-  db.ref("films").on("value",snap=>{
-    fDiv.innerHTML="";
-    snap.forEach(c=>{
-      let d=document.createElement("div");
-      d.innerHTML=`<a href="${c.val().link}" target="_blank">${c.val().link}</a>`;
-      fDiv.appendChild(d);
-    })
-  });
+// ==== PRIVATE CHAT ====
+function loadPrivateFriends(){
+let sel=document.getElementById("friendSelect")
+sel.innerHTML=""
+for(let name in friendsData){
+let opt=document.createElement("option")
+opt.value=name; opt.text=name
+sel.appendChild(opt)
 }
-function addFilm(){
-  const link=document.getElementById("filmLink").value;
-  if(link!=""){db.ref("films").push({link:link});document.getElementById("filmLink").value="";}
+db.ref("privateChats").on("child_added",snap=>{
+const chat=snap.val()
+})
 }
-function filterFilms(){
-  const s=document.getElementById("searchFilm").value.toLowerCase();
-  document.querySelectorAll("#films div").forEach(d=>{
-    d.style.display=d.innerText.toLowerCase().includes(s)?"block":"none";
-  });
-}
-
-// 🔹 MAIL
-function loadInvites(){
-  const iDiv=document.getElementById("inviteList");
-  db.ref("invites").on("value",snap=>{
-    iDiv.innerHTML="";
-    snap.forEach(c=>{
-      let d=document.createElement("div");
-      d.innerText=c.val().from+" -> "+c.val().to+" : "+c.val().type;
-      iDiv.appendChild(d);
-    })
-  });
-}
-function sendInvite(){
-  const to=document.getElementById("inviteFriend").value;
-  if(to!=""){db.ref("invites").push({from:currentUserID,to:to,type:"chat invite"});}
+function sendPrivate(){
+let f=document.getElementById("friendSelect").value
+let text=document.getElementById("privateMsg").value
+if(text==="") return
+let chatID=[user,f].sort().join("_")
+db.ref("privateChats/"+chatID).push({sender:user,text:text,time:Date.now()})
+document.getElementById("privateMsg").value=""
+db.ref("privateChats/"+chatID).on("child_added",snap=>{
+const m=snap.val()
+let div=document.getElementById("privateMessages")
+let d=document.createElement("div")
+d.innerText=m.sender+" : "+m.text
+div.appendChild(d)
+div.scrollTop=div.scrollHeight
+})
 }
 
-// 🔹 ID PAGE
-function changeIDPass(){
-  const newID=document.getElementById("newID").value;
-  const newPass=document.getElementById("newPass").value;
-  if(newID!=""){currentUserID=newID;document.getElementById("userID").innerText=currentUserID;}
-  if(newPass!=""){document.getElementById("userPass").innerText=newPass;}
+// ==== GAMES ====
+function playGame(){
+coins+=10
+db.ref("users/"+user+"/coins").set(coins)
+let d=document.createElement("div")
+d.innerText="You earned 10 coins"
+document.getElementById("gameLog").appendChild(d)
 }
 
-// 🔹 GROUP CHAT
-function createGroup(){
-  const gName=document.getElementById("groupName").value;
-  const gPass=document.getElementById("groupPass").value;
-  const gMembers=document.getElementById("groupMembers").value.split(",");
-  if(gName!="" && gPass!="" && gMembers.length>0){
-    db.ref("groups").push({name:gName,password:gPass,members:gMembers,creator:currentUserID});
-    document.getElementById("groupName").value="";
-    document.getElementById("groupPass").value="";
-    document.getElementById("groupMembers").value="";
-  }
+// ==== STORE ====
+function buy(price,item){
+if(coins<price){alert("Not enough coins"); return}
+coins-=price
+db.ref("users/"+user+"/coins").set(coins)
+let d=document.createElement("div")
+d.innerText="Purchased "+item+" for "+price+" coins"
+document.getElementById("storeLog").appendChild(d)
 }
 
-// 🔹 PRIVATE CHAT
-function createPrivate(){
-  const friend=document.getElementById("privateFriend").value;
-  const pPass=document.getElementById("privatePass").value;
-  if(friend!="" && pPass!=""){db.ref("privateChats").push({members:[currentUserID,friend],password:pPass,creator:currentUserID});document.getElementById("privateFriend").value="";document.getElementById("privatePass").value="";}
+// ==== BANK ====
+function borrow(amount){
+coins+=amount
+db.ref("users/"+user+"/coins").set(coins)
+let d=document.createElement("div")
+d.innerText="Borrowed "+amount+" coins"
+document.getElementById("bankLog").appendChild(d)
 }
+function pay(amount){
+if(coins<amount){alert("Not enough coins"); return}
+coins-=amount
+db.ref("users/"+user+"/coins").set(coins)
+let d=document.createElement("div")
+d.innerText="Paid "+amount+" coins"
+document.getElementById("bankLog").appendChild(d)
+}
+
+// ==== MAIL ====
+function loadMail(){
+db.ref("mail/"+user).on("child_added",snap=>{
+const m=snap.val()
+let d=document.createElement("div")
+d.innerText="From: "+m.from+" | "+m.subject+" | "+m.message
+document.getElementById("mailBox").appendChild(d)
+})
+}
+
+// ==== SPECIAL FILMS ====
+let films=["Avengers","Spider Man","Avatar","Batman","Interstellar","Inception"]
+function searchFilm(){
+let s=document.getElementById("searchFilm").value.toLowerCase()
+let box=document.getElementById("filmBox")
+box.innerHTML=""
+films.forEach(f=>{
+if(f.toLowerCase().includes(s)){
+let d=document.createElement("div")
+d.innerText=f
+box.appendChild(d)
+}
+})
+}
+
 </script>
-
 </body>
 </html>
