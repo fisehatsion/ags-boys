@@ -3,286 +3,575 @@
 <head>
 <meta charset="UTF-8">
 <title>AGS Boys V4.1</title>
+
 <style>
-body {background:black;color:#00ff9c;font-family:monospace;text-align:center;margin:0;}
-button {background:#001f1f;color:#00ff9c;border:1px solid #00ff9c;padding:10px;margin:5px;cursor:pointer;}
-input {padding:8px;margin:5px;}
-.page {display:none;}
-.box{height:300px;overflow:auto;border:1px solid #00ff9c;margin:10px;padding:5px;}
-.friend{cursor:pointer;padding:5px;border-bottom:1px solid #00ff9c;}
+body{
+background:black;
+color:#00ff9c;
+font-family:monospace;
+text-align:center;
+margin:0;
+}
+
+button{
+background:#002222;
+color:#00ff9c;
+border:1px solid #00ff9c;
+padding:10px;
+margin:5px;
+cursor:pointer;
+}
+
+input{
+padding:8px;
+margin:5px;
+}
+
+.page{
+display:none;
+}
+
+.box{
+height:300px;
+overflow:auto;
+border:1px solid #00ff9c;
+margin:10px;
+padding:5px;
+}
+
+.friend{
+cursor:pointer;
+padding:5px;
+border-bottom:1px solid #00ff9c;
+}
 </style>
 </head>
+
 <body>
 
 <h1>AGS BOYS</h1>
 
 <!-- LOGIN -->
 <div id="login" class="page" style="display:block">
+
 <input id="pass" placeholder="Enter password"><br>
+
 <button onclick="login()">Enter</button>
+
+<br>
+
+<button onclick="forgetPassword()">Forget Password</button>
+
 </div>
 
 <!-- HOME -->
 <div id="home" class="page">
+
 <h3>Coins: <span id="coinCount">0</span></h3>
-<div id="friends"></div><br>
+
+<div id="friends"></div>
+
+<br>
+
 <button onclick="openPage('chat')">Public Chat</button>
+
 <button onclick="openPage('private')">Private Chat</button>
+
 <button onclick="openPage('games')">Games</button>
+
 <button onclick="openPage('store')">Store</button>
+
 <button onclick="openPage('bank')">Bank</button>
+
 <button onclick="openPage('mail')">Mail</button>
-<button onclick="openPage('special')">Special</button>
-<button onclick="addFriend()">Add Friend</button>
-<button onclick="addLink()">Add Link</button>
+
+<button onclick="openPage('films')">Films</button>
+
 </div>
 
 <!-- PUBLIC CHAT -->
 <div id="chat" class="page">
+
 <h2>Public Chat</h2>
+
 <div id="messages" class="box"></div>
+
 <input id="msg" placeholder="Message">
-<button onclick="sendMessage()">Send</button><br><br>
+
+<button onclick="sendMessage()">Send</button>
+
+<br><br>
+
 <button onclick="openPage('home')">Back</button>
+
 </div>
 
 <!-- PRIVATE CHAT -->
 <div id="private" class="page">
+
 <h2>Private Chat</h2>
-<select id="friendSelect"></select><br>
+
+<select id="friendSelect"></select>
+
 <div id="privateMessages" class="box"></div>
+
 <input id="privateMsg" placeholder="Message">
-<button onclick="sendPrivate()">Send</button><br><br>
+
+<button onclick="sendPrivate()">Send</button>
+
+<br><br>
+
 <button onclick="openPage('home')">Back</button>
+
 </div>
 
 <!-- GAMES -->
 <div id="games" class="page">
-<h2>Mind Games</h2>
+
+<h2>Games</h2>
+
 <div id="gameLog" class="box"></div>
-<button onclick="playGame()">Play Game (+10 coins)</button><br><br>
+
+<button onclick="playGame()">Play Game (+10 coins)</button>
+
+<br>
+
 <button onclick="openPage('home')">Back</button>
+
 </div>
 
 <!-- STORE -->
 <div id="store" class="page">
+
 <h2>Store</h2>
+
 <div id="storeLog" class="box"></div>
-<button onclick="buy(100,'Game AI Bot')">Game AI Bot (100 coins)</button>
+
+<button onclick="buy(100,'AI Bot')">AI Bot (100 coins)</button>
+
 <button onclick="buy(300,'AI Chat Helper')">AI Chat Helper (300 coins)</button>
-<button onclick="buy(500,'AI Film Search')">AI Film Search (500 coins)</button>
-<button onclick="buy(1000,'AI Chat System')">AI Chat System (1000 coins)</button><br><br>
+
+<button onclick="buy(500,'Film Search AI')">Film Search AI (500 coins)</button>
+
+<button onclick="buy(1000,'AI Chat System')">AI Chat System (1000 coins)</button>
+
+<br>
+
 <button onclick="openPage('home')">Back</button>
+
 </div>
 
 <!-- BANK -->
 <div id="bank" class="page">
+
 <h2>Bank</h2>
+
 <div id="bankLog" class="box"></div>
+
 <button onclick="borrow(50)">Borrow 50 coins</button>
-<button onclick="pay(50)">Pay 50 coins</button><br><br>
+
+<button onclick="pay(50)">Pay 50 coins</button>
+
+<br>
+
 <button onclick="openPage('home')">Back</button>
+
 </div>
 
 <!-- MAIL -->
 <div id="mail" class="page">
+
 <h2>Mail</h2>
-<div id="mailBox" class="box"></div><br>
+
+<div id="mailBox" class="box"></div>
+
+<br>
+
 <button onclick="openPage('home')">Back</button>
+
 </div>
 
-<!-- SPECIAL FILMS -->
-<div id="special" class="page">
-<h2>Special Films</h2>
-<input id="searchFilm" placeholder="Search film">
+<!-- FILM SEARCH -->
+<div id="films" class="page">
+
+<h2>Film Search</h2>
+
+<input id="filmSearch" placeholder="Search film">
+
 <button onclick="searchFilm()">Search</button>
-<div id="filmBox" class="box"></div><br>
+
+<div id="filmBox" class="box"></div>
+
+<br>
+
 <button onclick="openPage('home')">Back</button>
+
 </div>
 
 <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
 
 <script>
-// ==== FIREBASE CONFIG ====
-// Replace with your project Firebase config
-const firebaseConfig={
+
+/* FIREBASE CONFIG
+REPLACE WITH YOUR CONFIG
+*/
+
+const firebaseConfig = {
+
 apiKey:"PASTE",
+
 authDomain:"PASTE",
+
 databaseURL:"PASTE",
-projectId:"PASTE",
-storageBucket:"PASTE",
-messagingSenderId:"PASTE",
-appId:"PASTE"
+
+projectId:"PASTE"
+
 };
+
 firebase.initializeApp(firebaseConfig)
-const db=firebase.database()
 
-// ==== GLOBAL VARIABLES ====
-let user="user_"+Math.floor(Math.random()*100000)
-let coins=0
-const friendsData={
-"fiseha":"0922986741","merawi":"0900044774","kidus":"0910003855","marken":"0904306090",
-"natanim":"0920607048","mikias":"0913269364","addis":"0913424637","bakes":"0982223246",
-"pineal":"0911254265","eyosiyas":"0946395152","yafet":"0996649990","muse":"0913310424",
-"ezana":"0911983651","aelaf":"0911417142"
+const db = firebase.database()
+
+let user = "user_"+Math.floor(Math.random()*100000)
+
+let coins = 0
+
+const password = "faimse@123"
+
+const friendsData = {
+
+"fiseha":"0922986741",
+
+"merawi":"0900044774",
+
+"kidus":"0910003855",
+
+"marken":"0904306090",
+
+"natanim":"0920607048",
+
+"mikias":"0913269364",
+
+"addis":"0913424637",
+
+"bakes":"0982223246",
+
+"pineal":"0911254265",
+
+"eyosiyas":"0946395152",
+
+"yafet":"0996649990",
+
+"muse":"0913310424",
+
+"ezana":"0911983651",
+
+"aelaf":"0911417142"
+
 }
 
-// ==== LOGIN SYSTEM ====
+/* LOGIN */
+
 function login(){
-const pass=document.getElementById("pass").value
-if(pass==="faimse@123"){
+
+if(document.getElementById("pass").value === password){
+
 openPage("home")
-db.ref("users/"+user).set({coins:0,id:user})
+
 loadFriends()
+
 loadCoins()
+
 loadMessages()
+
 loadPrivateFriends()
+
 loadMail()
-}else{alert("Try again")}
+
+}else{
+
+alert("Try again")
+
 }
 
-// ==== PAGE SWITCH ====
+}
+
+/* FORGET PASSWORD */
+
+function forgetPassword(){
+
+let num = prompt("Enter a phone number of a person in this website")
+
+let found = false
+
+for(let name in friendsData){
+
+if(friendsData[name] === num){
+
+alert("Password is: " + password)
+
+found = true
+
+}
+
+}
+
+if(!found){
+
+alert("Phone number not found")
+
+}
+
+}
+
+/* PAGE SWITCH */
+
 function openPage(id){
+
 document.querySelectorAll(".page").forEach(p=>p.style.display="none")
+
 document.getElementById(id).style.display="block"
+
 }
 
-// ==== FRIEND LIST ====
+/* FRIENDS */
+
 function loadFriends(){
-let f=document.getElementById("friends")
-f.innerHTML=""
+
+let f = document.getElementById("friends")
+
+f.innerHTML = ""
+
 for(let name in friendsData){
-let d=document.createElement("div")
+
+let d = document.createElement("div")
+
 d.className="friend"
+
 d.innerText=name
+
 d.onclick=function(){
-let p=prompt("Enter password")
-if(p==="faimse@123"){ alert("Phone: "+friendsData[name]) }
-else{ alert("Try again") }
+
+let p = prompt("Enter password")
+
+if(p===password){
+
+alert("Phone: "+friendsData[name])
+
+}else{
+
+alert("Try again")
+
 }
+
+}
+
 f.appendChild(d)
-}}
-function addFriend(){alert("Add Friend - Feature Active")}
-function addLink(){alert("Add Link - Feature Active")}
 
-// ==== COINS ====
+}
+
+}
+
+/* COINS */
+
 function loadCoins(){
+
 db.ref("users/"+user+"/coins").on("value",snap=>{
-coins=snap.val()||0
-document.getElementById("coinCount").innerText=coins
+
+coins = snap.val() || 0
+
+document.getElementById("coinCount").innerText = coins
+
 })
+
 }
 
-// ==== PUBLIC CHAT ====
+/* CHAT */
+
 function sendMessage(){
-let t=document.getElementById("msg").value
-if(t==="") return
-db.ref("messages").push({user:user,text:t,time:Date.now()})
-document.getElementById("msg").value=""
+
+let t = document.getElementById("msg").value
+
+db.ref("messages").push({user:user,text:t})
+
 }
+
+/* LOAD CHAT */
+
 function loadMessages(){
-const msgDiv=document.getElementById("messages")
+
 db.ref("messages").on("child_added",snap=>{
-const m=snap.val()
-let d=document.createElement("div")
-d.innerText=m.user+" : "+m.text
-msgDiv.appendChild(d)
-msgDiv.scrollTop=msgDiv.scrollHeight
+
+let m = snap.val()
+
+let d = document.createElement("div")
+
+d.innerText = m.user+" : "+m.text
+
+document.getElementById("messages").appendChild(d)
+
 })
+
 }
 
-// ==== PRIVATE CHAT ====
+/* PRIVATE CHAT */
+
 function loadPrivateFriends(){
-let sel=document.getElementById("friendSelect")
-sel.innerHTML=""
-for(let name in friendsData){
-let opt=document.createElement("option")
-opt.value=name; opt.text=name
-sel.appendChild(opt)
+
+let s = document.getElementById("friendSelect")
+
+for(let n in friendsData){
+
+let o = document.createElement("option")
+
+o.value=n
+
+o.text=n
+
+s.appendChild(o)
+
 }
-db.ref("privateChats").on("child_added",snap=>{
-const chat=snap.val()
-})
+
 }
+
 function sendPrivate(){
-let f=document.getElementById("friendSelect").value
-let text=document.getElementById("privateMsg").value
-if(text==="") return
-let chatID=[user,f].sort().join("_")
-db.ref("privateChats/"+chatID).push({sender:user,text:text,time:Date.now()})
-document.getElementById("privateMsg").value=""
-db.ref("privateChats/"+chatID).on("child_added",snap=>{
-const m=snap.val()
-let div=document.getElementById("privateMessages")
-let d=document.createElement("div")
-d.innerText=m.sender+" : "+m.text
-div.appendChild(d)
-div.scrollTop=div.scrollHeight
-})
+
+let f = document.getElementById("friendSelect").value
+
+let text = document.getElementById("privateMsg").value
+
+let id = [user,f].sort().join("_")
+
+db.ref("privateChats/"+id).push({sender:user,text:text})
+
 }
 
-// ==== GAMES ====
+/* GAME */
+
 function playGame(){
-coins+=10
+
+coins += 10
+
 db.ref("users/"+user+"/coins").set(coins)
-let d=document.createElement("div")
-d.innerText="You earned 10 coins"
+
+let d = document.createElement("div")
+
+d.innerText = "You earned 10 coins"
+
 document.getElementById("gameLog").appendChild(d)
+
 }
 
-// ==== STORE ====
+/* STORE */
+
 function buy(price,item){
-if(coins<price){alert("Not enough coins"); return}
-coins-=price
+
+if(coins < price){
+
+alert("Not enough coins")
+
+return
+
+}
+
+coins -= price
+
 db.ref("users/"+user+"/coins").set(coins)
-let d=document.createElement("div")
-d.innerText="Purchased "+item+" for "+price+" coins"
+
+let d = document.createElement("div")
+
+d.innerText = "Purchased "+item
+
 document.getElementById("storeLog").appendChild(d)
+
 }
 
-// ==== BANK ====
-function borrow(amount){
-coins+=amount
+/* BANK */
+
+function borrow(a){
+
+coins += a
+
 db.ref("users/"+user+"/coins").set(coins)
-let d=document.createElement("div")
-d.innerText="Borrowed "+amount+" coins"
+
+let d = document.createElement("div")
+
+d.innerText = "Borrowed "+a
+
 document.getElementById("bankLog").appendChild(d)
-}
-function pay(amount){
-if(coins<amount){alert("Not enough coins"); return}
-coins-=amount
-db.ref("users/"+user+"/coins").set(coins)
-let d=document.createElement("div")
-d.innerText="Paid "+amount+" coins"
-document.getElementById("bankLog").appendChild(d)
+
 }
 
-// ==== MAIL ====
+function pay(a){
+
+if(coins < a){
+
+alert("Not enough coins")
+
+return
+
+}
+
+coins -= a
+
+db.ref("users/"+user+"/coins").set(coins)
+
+let d = document.createElement("div")
+
+d.innerText = "Paid "+a
+
+document.getElementById("bankLog").appendChild(d)
+
+}
+
+/* MAIL */
+
 function loadMail(){
+
 db.ref("mail/"+user).on("child_added",snap=>{
-const m=snap.val()
-let d=document.createElement("div")
-d.innerText="From: "+m.from+" | "+m.subject+" | "+m.message
+
+let m = snap.val()
+
+let d = document.createElement("div")
+
+d.innerText = m
+
 document.getElementById("mailBox").appendChild(d)
+
 })
+
 }
 
-// ==== SPECIAL FILMS ====
-let films=["Avengers","Spider Man","Avatar","Batman","Interstellar","Inception"]
+/* FILMS */
+
+const films=["Avatar","Avengers","Batman","Spider Man","Inception","Interstellar"]
+
 function searchFilm(){
-let s=document.getElementById("searchFilm").value.toLowerCase()
+
+let s=document.getElementById("filmSearch").value.toLowerCase()
+
 let box=document.getElementById("filmBox")
+
 box.innerHTML=""
+
 films.forEach(f=>{
+
 if(f.toLowerCase().includes(s)){
+
 let d=document.createElement("div")
+
 d.innerText=f
+
 box.appendChild(d)
+
 }
+
 })
+
 }
 
 </script>
+
 </body>
 </html>
