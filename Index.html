@@ -11,7 +11,6 @@ background:black;
 color:#00ff9c;
 font-family:monospace;
 text-align:center;
-margin:0;
 }
 
 button{
@@ -53,8 +52,6 @@ cursor:pointer;
 
 <h1>AGS BOYS</h1>
 
-<!-- LOGIN -->
-
 <div id="login" class="page" style="display:block">
 
 <input id="password" placeholder="Password"><br>
@@ -67,7 +64,6 @@ cursor:pointer;
 
 </div>
 
-<!-- HOME -->
 
 <div id="home" class="page">
 
@@ -80,16 +76,12 @@ cursor:pointer;
 <br>
 
 <button onclick="openPage('chat')">Public Chat</button>
-<button onclick="openPage('private')">Private Chat</button>
 <button onclick="openPage('games')">Games</button>
 <button onclick="openPage('store')">Store</button>
 <button onclick="openPage('bank')">Bank</button>
-<button onclick="openPage('mail')">Mail</button>
-<button onclick="openPage('films')">Films</button>
 
 </div>
 
-<!-- PUBLIC CHAT -->
 
 <div id="chat" class="page">
 
@@ -107,27 +99,6 @@ cursor:pointer;
 
 </div>
 
-<!-- PRIVATE CHAT -->
-
-<div id="private" class="page">
-
-<h2>Private Chat</h2>
-
-<select id="friendSelect"></select>
-
-<div id="privateMessages" class="box"></div>
-
-<input id="privateMsg">
-
-<button onclick="sendPrivate()">Send</button>
-
-<br><br>
-
-<button onclick="openPage('home')">Back</button>
-
-</div>
-
-<!-- GAMES -->
 
 <div id="games" class="page">
 
@@ -143,7 +114,6 @@ cursor:pointer;
 
 </div>
 
-<!-- STORE -->
 
 <div id="store" class="page">
 
@@ -151,10 +121,10 @@ cursor:pointer;
 
 <div id="storeLog" class="box"></div>
 
-<button onclick="buy(100,'AI Game Bots')">AI Game Bots (100)</button>
-<button onclick="buy(300,'AI Chat Helper')">AI Chat Helper (300)</button>
-<button onclick="buy(500,'AI Film Search')">AI Film Search (500)</button>
-<button onclick="buy(1000,'AI Chat System')">AI Chat System (1000)</button>
+<button onclick="buy(100)">AI Game Bots (100)</button>
+<button onclick="buy(300)">AI Chat Helper (300)</button>
+<button onclick="buy(500)">AI Film Search (500)</button>
+<button onclick="buy(1000)">AI Chat System (1000)</button>
 
 <br>
 
@@ -162,7 +132,6 @@ cursor:pointer;
 
 </div>
 
-<!-- BANK -->
 
 <div id="bank" class="page">
 
@@ -184,42 +153,14 @@ cursor:pointer;
 
 </div>
 
-<!-- MAIL -->
-
-<div id="mail" class="page">
-
-<h2>Mail</h2>
-
-<div id="mailBox" class="box"></div>
-
-<button onclick="openPage('home')">Back</button>
-
-</div>
-
-<!-- FILMS -->
-
-<div id="films" class="page">
-
-<h2>Film Search</h2>
-
-<input id="filmSearch">
-
-<button onclick="searchFilm()">Search</button>
-
-<div id="filmBox" class="box"></div>
-
-<br>
-
-<button onclick="openPage('home')">Back</button>
-
-</div>
 
 <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
 
+
 <script>
 
-/* REPLACE WITH YOUR FIREBASE CONFIG */
+/* FIREBASE CONFIG */
 
 const firebaseConfig = {
 
@@ -241,14 +182,30 @@ let debt = 0;
 
 const password="faimse@123";
 
-const friends={
+
+/* FULL PHONE NUMBERS */
+
+const friends = {
 
 "fiseha":"0922986741",
 "merawi":"0900044774",
 "kidus":"0910003855",
-"marken":"0904306090"
+"marken":"0904306090",
+"natanim":"0920607048",
+"mikias":"0913269364",
+"addis":"0913424637",
+"bakes":"0982223246",
+"pineal":"0911254265",
+"eyosiyas":"0946395152",
+"yafet":"0996649990",
+"muse":"0913310424",
+"ezana":"0911983651",
+"aelaf":"0911417142"
 
 };
+
+
+/* LOGIN */
 
 function login(){
 
@@ -259,14 +216,8 @@ if(p===password){
 openPage("home");
 
 loadFriends();
-
 loadCoins();
-
 loadMessages();
-
-loadPrivateFriends();
-
-loadMail();
 
 }else{
 
@@ -276,9 +227,12 @@ alert("Try again");
 
 }
 
+
+/* FORGET PASSWORD */
+
 function forgetPassword(){
 
-let num=prompt("Enter phone number of someone in the website");
+let num=prompt("Enter phone number of someone in this website");
 
 let found=false;
 
@@ -286,7 +240,13 @@ for(let name in friends){
 
 if(friends[name]===num){
 
-alert("Password: "+password);
+alert("Phone verified. Signing in.");
+
+openPage("home");
+
+loadFriends();
+loadCoins();
+loadMessages();
 
 found=true;
 
@@ -296,11 +256,12 @@ found=true;
 
 if(!found){
 
-alert("Number not found");
+alert("Phone number not found");
 
 }
 
 }
+
 
 function openPage(id){
 
@@ -309,6 +270,9 @@ document.querySelectorAll(".page").forEach(p=>p.style.display="none");
 document.getElementById(id).style.display="block";
 
 }
+
+
+/* FRIENDS */
 
 function loadFriends(){
 
@@ -332,6 +296,10 @@ if(p===password){
 
 alert("Phone: "+friends[name]);
 
+}else{
+
+alert("Try again");
+
 }
 
 };
@@ -341,6 +309,9 @@ f.appendChild(d);
 }
 
 }
+
+
+/* COINS */
 
 function loadCoins(){
 
@@ -354,11 +325,19 @@ document.getElementById("coins").innerText=coins;
 
 }
 
+
+/* CHAT */
+
 function sendMessage(){
 
-let t=document.getElementById("msg").value;
+let text=document.getElementById("msg").value;
 
-db.ref("messages").push({user:user,text:t});
+db.ref("messages").push({
+
+user:user,
+text:text
+
+});
 
 }
 
@@ -378,35 +357,8 @@ document.getElementById("messages").appendChild(d);
 
 }
 
-function loadPrivateFriends(){
 
-let s=document.getElementById("friendSelect");
-
-for(let n in friends){
-
-let o=document.createElement("option");
-
-o.value=n;
-
-o.text=n;
-
-s.appendChild(o);
-
-}
-
-}
-
-function sendPrivate(){
-
-let f=document.getElementById("friendSelect").value;
-
-let text=document.getElementById("privateMsg").value;
-
-let id=[user,f].sort().join("_");
-
-db.ref("privateChats/"+id).push({sender:user,text:text});
-
-}
+/* GAME */
 
 function playGame(){
 
@@ -422,7 +374,10 @@ document.getElementById("gameLog").appendChild(d);
 
 }
 
-function buy(price,item){
+
+/* STORE */
+
+function buy(price){
 
 if(coins<price){
 
@@ -436,15 +391,12 @@ coins-=price;
 
 db.ref("users/"+user+"/coins").set(coins);
 
-let d=document.createElement("div");
-
-d.innerText="Purchased "+item;
-
-document.getElementById("storeLog").appendChild(d);
-
 }
 
-function borrow(a){
+
+/* BANK */
+
+function borrow(amount){
 
 if(debt>0){
 
@@ -454,23 +406,16 @@ return;
 
 }
 
-coins+=a;
+coins+=amount;
 
-debt=a;
+debt=amount;
 
 db.ref("users/"+user+"/coins").set(coins);
 
 }
 
+
 function pay(){
-
-if(debt===0){
-
-alert("No debt");
-
-return;
-
-}
 
 if(coins<debt){
 
@@ -485,48 +430,6 @@ coins-=debt;
 debt=0;
 
 db.ref("users/"+user+"/coins").set(coins);
-
-}
-
-function loadMail(){
-
-db.ref("mail/"+user).on("child_added",snap=>{
-
-let m=snap.val();
-
-let d=document.createElement("div");
-
-d.innerText=m;
-
-document.getElementById("mailBox").appendChild(d);
-
-});
-
-}
-
-const films=["Avatar","Avengers","Batman","Spider Man","Inception","Interstellar"];
-
-function searchFilm(){
-
-let s=document.getElementById("filmSearch").value.toLowerCase();
-
-let box=document.getElementById("filmBox");
-
-box.innerHTML="";
-
-films.forEach(f=>{
-
-if(f.toLowerCase().includes(s)){
-
-let d=document.createElement("div");
-
-d.innerText=f;
-
-box.appendChild(d);
-
-}
-
-});
 
 }
 
