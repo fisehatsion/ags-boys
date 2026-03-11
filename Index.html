@@ -1,22 +1,23 @@
 <!DOCTYPE html>
 <html>
 <head>
+
 <meta charset="UTF-8">
-<title>AGS Boys</title>
+<title>AGS BOYS</title>
 
 <style>
 
 body{
 background:black;
-color:#00ff9c;
+color:#00ff99;
 font-family:monospace;
 text-align:center;
 }
 
 button{
-background:#002222;
-color:#00ff9c;
-border:1px solid #00ff9c;
+background:#001111;
+color:#00ff99;
+border:1px solid #00ff99;
 padding:10px;
 margin:5px;
 }
@@ -33,14 +34,14 @@ display:none;
 .box{
 height:250px;
 overflow:auto;
-border:1px solid #00ff9c;
+border:1px solid #00ff99;
 margin:10px;
 padding:5px;
 }
 
 .friend{
-border-bottom:1px solid #00ff9c;
 padding:6px;
+border-bottom:1px solid #00ff99;
 cursor:pointer;
 }
 
@@ -52,9 +53,13 @@ cursor:pointer;
 
 <h1>AGS BOYS</h1>
 
-<div id="login" class="page" style="display:block">
+<!-- LOGIN -->
 
-<input id="password" placeholder="Password"><br>
+<div id="loginPage" class="page" style="display:block">
+
+<input id="password" placeholder="Enter Password">
+
+<br>
 
 <button onclick="login()">Enter</button>
 
@@ -65,25 +70,34 @@ cursor:pointer;
 </div>
 
 
-<div id="home" class="page">
+<!-- HOME -->
 
-<h3>Coins: <span id="coins">0</span></h3>
+<div id="homePage" class="page">
+
+<h3>Coins: <span id="coinBox">0</span></h3>
 
 <h3>Friends</h3>
 
-<div id="friends"></div>
+<div id="friendList"></div>
 
 <br>
 
-<button onclick="openPage('chat')">Public Chat</button>
-<button onclick="openPage('games')">Games</button>
-<button onclick="openPage('store')">Store</button>
-<button onclick="openPage('bank')">Bank</button>
+<button onclick="openPage('chatPage')">Chat</button>
+
+<button onclick="openPage('gamesPage')">Games</button>
+
+<button onclick="openPage('storePage')">Store</button>
+
+<button onclick="openPage('bankPage')">Bank</button>
+
+<button onclick="openPage('mailPage')">Mail</button>
 
 </div>
 
 
-<div id="chat" class="page">
+<!-- CHAT -->
+
+<div id="chatPage" class="page">
 
 <h2>Public Chat</h2>
 
@@ -95,64 +109,94 @@ cursor:pointer;
 
 <br><br>
 
-<button onclick="openPage('home')">Back</button>
+<button onclick="openPage('homePage')">Back</button>
 
 </div>
 
 
-<div id="games" class="page">
+<!-- GAMES -->
+
+<div id="gamesPage" class="page">
 
 <h2>Games</h2>
 
-<div id="gameLog" class="box"></div>
+<div class="box" id="gameBox"></div>
 
-<button onclick="playGame()">Play Game (+10 coins)</button>
+<button onclick="playGame()">Play Puzzle</button>
 
 <br>
 
-<button onclick="openPage('home')">Back</button>
+<button onclick="openPage('homePage')">Back</button>
 
 </div>
 
 
-<div id="store" class="page">
+<!-- STORE -->
+
+<div id="storePage" class="page">
 
 <h2>Store</h2>
 
-<div id="storeLog" class="box"></div>
+<div class="box"></div>
 
-<button onclick="buy(100)">AI Game Bots (100)</button>
-<button onclick="buy(300)">AI Chat Helper (300)</button>
-<button onclick="buy(500)">AI Film Search (500)</button>
-<button onclick="buy(1000)">AI Chat System (1000)</button>
+<button onclick="buy('bots',100)">Game AI Bots (100)</button>
+
+<button onclick="buy('chatHelp',300)">AI Chat Helper (300)</button>
+
+<button onclick="buy('film',500)">AI Film Search (500)</button>
+
+<button onclick="buy('aiChat',1000)">AI Chat System (1000)</button>
 
 <br>
 
-<button onclick="openPage('home')">Back</button>
+<button onclick="openPage('homePage')">Back</button>
 
 </div>
 
 
-<div id="bank" class="page">
+<!-- BANK -->
+
+<div id="bankPage" class="page">
 
 <h2>Bank</h2>
 
-<div id="bankLog" class="box"></div>
+<div class="box" id="bankLog"></div>
 
 <button onclick="borrow(25)">Borrow 25</button>
+
+<button onclick="borrow(30)">Borrow 30</button>
+
 <button onclick="borrow(50)">Borrow 50</button>
+
 <button onclick="borrow(70)">Borrow 70</button>
 
 <br>
 
-<button onclick="pay()">Pay Debt</button>
+<button onclick="payDebt()">Pay Debt</button>
 
 <br>
 
-<button onclick="openPage('home')">Back</button>
+<button onclick="openPage('homePage')">Back</button>
 
 </div>
 
+
+<!-- MAIL -->
+
+<div id="mailPage" class="page">
+
+<h2>Mail</h2>
+
+<div id="mailBox" class="box"></div>
+
+<br>
+
+<button onclick="openPage('homePage')">Back</button>
+
+</div>
+
+
+<!-- FIREBASE -->
 
 <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
@@ -175,15 +219,25 @@ firebase.initializeApp(firebaseConfig);
 
 const db = firebase.database();
 
+
+
+/* USER */
+
 let user = "user_"+Math.floor(Math.random()*100000);
 
 let coins = 0;
+
 let debt = 0;
 
-const password="faimse@123";
 
 
-/* FULL PHONE NUMBERS */
+/* WEBSITE PASSWORD */
+
+const password = "agsboys";
+
+
+
+/* FRIEND PHONE NUMBERS */
 
 const friends = {
 
@@ -191,13 +245,13 @@ const friends = {
 "merawi":"0900044774",
 "kidus":"0910003855",
 "marken":"0904306090",
-"natanim":"0920607048",
-"mikias":"0913269364",
+"natanim demsew":"0920607048",
+"mikias tizazu":"0913269364",
 "addis":"0913424637",
 "bakes":"0982223246",
 "pineal":"0911254265",
 "eyosiyas":"0946395152",
-"yafet":"0996649990",
+"yafet abraham":"0996649990",
 "muse":"0913310424",
 "ezana":"0911983651",
 "aelaf":"0911417142"
@@ -205,19 +259,24 @@ const friends = {
 };
 
 
+
 /* LOGIN */
 
 function login(){
 
-let p=document.getElementById("password").value;
+let p = document.getElementById("password").value;
 
-if(p===password){
+if(p === password){
 
-openPage("home");
+openPage("homePage");
 
 loadFriends();
+
 loadCoins();
+
 loadMessages();
+
+loadMail();
 
 }else{
 
@@ -228,40 +287,32 @@ alert("Try again");
 }
 
 
+
 /* FORGET PASSWORD */
 
 function forgetPassword(){
 
-let num=prompt("Enter phone number of someone in this website");
-
-let found=false;
+let num = prompt("Enter a phone number of someone in this website");
 
 for(let name in friends){
 
-if(friends[name]===num){
+if(friends[name] === num){
 
-alert("Phone verified. Signing in.");
+alert("Password is: "+password);
 
-openPage("home");
-
-loadFriends();
-loadCoins();
-loadMessages();
-
-found=true;
+return;
 
 }
 
 }
 
-if(!found){
-
-alert("Phone number not found");
+alert("Number not found");
 
 }
 
-}
 
+
+/* PAGE SWITCH */
 
 function openPage(id){
 
@@ -272,17 +323,18 @@ document.getElementById(id).style.display="block";
 }
 
 
-/* FRIENDS */
+
+/* FRIEND LIST */
 
 function loadFriends(){
 
-let f=document.getElementById("friends");
+let box = document.getElementById("friendList");
 
-f.innerHTML="";
+box.innerHTML="";
 
 for(let name in friends){
 
-let d=document.createElement("div");
+let d = document.createElement("div");
 
 d.className="friend";
 
@@ -290,7 +342,7 @@ d.innerText=name;
 
 d.onclick=function(){
 
-let p=prompt("Enter password");
+let p = prompt("Enter password to view phone");
 
 if(p===password){
 
@@ -304,11 +356,12 @@ alert("Try again");
 
 };
 
-f.appendChild(d);
+box.appendChild(d);
 
 }
 
 }
+
 
 
 /* COINS */
@@ -317,13 +370,14 @@ function loadCoins(){
 
 db.ref("users/"+user+"/coins").on("value",snap=>{
 
-coins=snap.val()||0;
+coins = snap.val() || 0;
 
-document.getElementById("coins").innerText=coins;
+document.getElementById("coinBox").innerText=coins;
 
 });
 
 }
+
 
 
 /* CHAT */
@@ -340,6 +394,8 @@ text:text
 });
 
 }
+
+
 
 function loadMessages(){
 
@@ -358,28 +414,34 @@ document.getElementById("messages").appendChild(d);
 }
 
 
+
 /* GAME */
 
 function playGame(){
 
-coins+=10;
+let reward = Math.floor(Math.random()*20)+5;
+
+coins += reward;
 
 db.ref("users/"+user+"/coins").set(coins);
 
+let log=document.getElementById("gameBox");
+
 let d=document.createElement("div");
 
-d.innerText="You earned 10 coins";
+d.innerText="You solved puzzle and got "+reward+" coins";
 
-document.getElementById("gameLog").appendChild(d);
+log.appendChild(d);
 
 }
 
 
+
 /* STORE */
 
-function buy(price){
+function buy(item,price){
 
-if(coins<price){
+if(coins < price){
 
 alert("Not enough coins");
 
@@ -387,11 +449,16 @@ return;
 
 }
 
-coins-=price;
+coins -= price;
 
 db.ref("users/"+user+"/coins").set(coins);
 
+db.ref("store/"+user+"/"+item).set(true);
+
+alert("Purchased");
+
 }
+
 
 
 /* BANK */
@@ -406,18 +473,21 @@ return;
 
 }
 
-coins+=amount;
+coins += amount;
 
-debt=amount;
+debt = amount;
 
 db.ref("users/"+user+"/coins").set(coins);
+
+db.ref("bank/"+user+"/debt").set(debt);
 
 }
 
 
-function pay(){
 
-if(coins<debt){
+function payDebt(){
+
+if(coins < debt){
 
 alert("Not enough coins");
 
@@ -425,11 +495,33 @@ return;
 
 }
 
-coins-=debt;
+coins -= debt;
 
-debt=0;
+debt = 0;
 
 db.ref("users/"+user+"/coins").set(coins);
+
+db.ref("bank/"+user+"/debt").set(0);
+
+}
+
+
+
+/* MAIL */
+
+function loadMail(){
+
+db.ref("mail/"+user).on("child_added",snap=>{
+
+let m=snap.val();
+
+let d=document.createElement("div");
+
+d.innerText=m;
+
+document.getElementById("mailBox").appendChild(d);
+
+});
 
 }
 
