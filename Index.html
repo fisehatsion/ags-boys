@@ -2,9 +2,10 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>AGS Boys V4.1</title>
+<title>AGS Boys</title>
 
 <style>
+
 body{
 background:black;
 color:#00ff9c;
@@ -19,7 +20,6 @@ color:#00ff9c;
 border:1px solid #00ff9c;
 padding:10px;
 margin:5px;
-cursor:pointer;
 }
 
 input{
@@ -32,7 +32,7 @@ display:none;
 }
 
 .box{
-height:300px;
+height:250px;
 overflow:auto;
 border:1px solid #00ff9c;
 margin:10px;
@@ -40,11 +40,13 @@ padding:5px;
 }
 
 .friend{
-cursor:pointer;
-padding:5px;
 border-bottom:1px solid #00ff9c;
+padding:6px;
+cursor:pointer;
 }
+
 </style>
+
 </head>
 
 <body>
@@ -52,9 +54,10 @@ border-bottom:1px solid #00ff9c;
 <h1>AGS BOYS</h1>
 
 <!-- LOGIN -->
+
 <div id="login" class="page" style="display:block">
 
-<input id="pass" placeholder="Enter password"><br>
+<input id="password" placeholder="Password"><br>
 
 <button onclick="login()">Enter</button>
 
@@ -65,38 +68,36 @@ border-bottom:1px solid #00ff9c;
 </div>
 
 <!-- HOME -->
+
 <div id="home" class="page">
 
-<h3>Coins: <span id="coinCount">0</span></h3>
+<h3>Coins: <span id="coins">0</span></h3>
+
+<h3>Friends</h3>
 
 <div id="friends"></div>
 
 <br>
 
 <button onclick="openPage('chat')">Public Chat</button>
-
 <button onclick="openPage('private')">Private Chat</button>
-
 <button onclick="openPage('games')">Games</button>
-
 <button onclick="openPage('store')">Store</button>
-
 <button onclick="openPage('bank')">Bank</button>
-
 <button onclick="openPage('mail')">Mail</button>
-
 <button onclick="openPage('films')">Films</button>
 
 </div>
 
 <!-- PUBLIC CHAT -->
+
 <div id="chat" class="page">
 
 <h2>Public Chat</h2>
 
 <div id="messages" class="box"></div>
 
-<input id="msg" placeholder="Message">
+<input id="msg">
 
 <button onclick="sendMessage()">Send</button>
 
@@ -107,6 +108,7 @@ border-bottom:1px solid #00ff9c;
 </div>
 
 <!-- PRIVATE CHAT -->
+
 <div id="private" class="page">
 
 <h2>Private Chat</h2>
@@ -115,7 +117,7 @@ border-bottom:1px solid #00ff9c;
 
 <div id="privateMessages" class="box"></div>
 
-<input id="privateMsg" placeholder="Message">
+<input id="privateMsg">
 
 <button onclick="sendPrivate()">Send</button>
 
@@ -126,6 +128,7 @@ border-bottom:1px solid #00ff9c;
 </div>
 
 <!-- GAMES -->
+
 <div id="games" class="page">
 
 <h2>Games</h2>
@@ -141,19 +144,17 @@ border-bottom:1px solid #00ff9c;
 </div>
 
 <!-- STORE -->
+
 <div id="store" class="page">
 
 <h2>Store</h2>
 
 <div id="storeLog" class="box"></div>
 
-<button onclick="buy(100,'AI Bot')">AI Bot (100 coins)</button>
-
-<button onclick="buy(300,'AI Chat Helper')">AI Chat Helper (300 coins)</button>
-
-<button onclick="buy(500,'Film Search AI')">Film Search AI (500 coins)</button>
-
-<button onclick="buy(1000,'AI Chat System')">AI Chat System (1000 coins)</button>
+<button onclick="buy(100,'AI Game Bots')">AI Game Bots (100)</button>
+<button onclick="buy(300,'AI Chat Helper')">AI Chat Helper (300)</button>
+<button onclick="buy(500,'AI Film Search')">AI Film Search (500)</button>
+<button onclick="buy(1000,'AI Chat System')">AI Chat System (1000)</button>
 
 <br>
 
@@ -162,15 +163,20 @@ border-bottom:1px solid #00ff9c;
 </div>
 
 <!-- BANK -->
+
 <div id="bank" class="page">
 
 <h2>Bank</h2>
 
 <div id="bankLog" class="box"></div>
 
-<button onclick="borrow(50)">Borrow 50 coins</button>
+<button onclick="borrow(25)">Borrow 25</button>
+<button onclick="borrow(50)">Borrow 50</button>
+<button onclick="borrow(70)">Borrow 70</button>
 
-<button onclick="pay(50)">Pay 50 coins</button>
+<br>
+
+<button onclick="pay()">Pay Debt</button>
 
 <br>
 
@@ -179,24 +185,24 @@ border-bottom:1px solid #00ff9c;
 </div>
 
 <!-- MAIL -->
+
 <div id="mail" class="page">
 
 <h2>Mail</h2>
 
 <div id="mailBox" class="box"></div>
 
-<br>
-
 <button onclick="openPage('home')">Back</button>
 
 </div>
 
-<!-- FILM SEARCH -->
+<!-- FILMS -->
+
 <div id="films" class="page">
 
 <h2>Film Search</h2>
 
-<input id="filmSearch" placeholder="Search film">
+<input id="filmSearch">
 
 <button onclick="searchFilm()">Search</button>
 
@@ -213,105 +219,76 @@ border-bottom:1px solid #00ff9c;
 
 <script>
 
-/* FIREBASE CONFIG
-REPLACE WITH YOUR CONFIG
-*/
+/* REPLACE WITH YOUR FIREBASE CONFIG */
 
 const firebaseConfig = {
 
 apiKey:"PASTE",
-
 authDomain:"PASTE",
-
 databaseURL:"PASTE",
-
 projectId:"PASTE"
 
 };
 
-firebase.initializeApp(firebaseConfig)
+firebase.initializeApp(firebaseConfig);
 
-const db = firebase.database()
+const db = firebase.database();
 
-let user = "user_"+Math.floor(Math.random()*100000)
+let user = "user_"+Math.floor(Math.random()*100000);
 
-let coins = 0
+let coins = 0;
+let debt = 0;
 
-const password = "faimse@123"
+const password="faimse@123";
 
-const friendsData = {
+const friends={
 
 "fiseha":"0922986741",
-
 "merawi":"0900044774",
-
 "kidus":"0910003855",
+"marken":"0904306090"
 
-"marken":"0904306090",
-
-"natanim":"0920607048",
-
-"mikias":"0913269364",
-
-"addis":"0913424637",
-
-"bakes":"0982223246",
-
-"pineal":"0911254265",
-
-"eyosiyas":"0946395152",
-
-"yafet":"0996649990",
-
-"muse":"0913310424",
-
-"ezana":"0911983651",
-
-"aelaf":"0911417142"
-
-}
-
-/* LOGIN */
+};
 
 function login(){
 
-if(document.getElementById("pass").value === password){
+let p=document.getElementById("password").value;
 
-openPage("home")
+if(p===password){
 
-loadFriends()
+openPage("home");
 
-loadCoins()
+loadFriends();
 
-loadMessages()
+loadCoins();
 
-loadPrivateFriends()
+loadMessages();
 
-loadMail()
+loadPrivateFriends();
+
+loadMail();
 
 }else{
 
-alert("Try again")
+alert("Try again");
 
 }
 
 }
-
-/* FORGET PASSWORD */
 
 function forgetPassword(){
 
-let num = prompt("Enter a phone number of a person in this website")
+let num=prompt("Enter phone number of someone in the website");
 
-let found = false
+let found=false;
 
-for(let name in friendsData){
+for(let name in friends){
 
-if(friendsData[name] === num){
+if(friends[name]===num){
 
-alert("Password is: " + password)
+alert("Password: "+password);
 
-found = true
+found=true;
 
 }
 
@@ -319,117 +296,101 @@ found = true
 
 if(!found){
 
-alert("Phone number not found")
+alert("Number not found");
 
 }
 
 }
-
-/* PAGE SWITCH */
 
 function openPage(id){
 
-document.querySelectorAll(".page").forEach(p=>p.style.display="none")
+document.querySelectorAll(".page").forEach(p=>p.style.display="none");
 
-document.getElementById(id).style.display="block"
+document.getElementById(id).style.display="block";
 
 }
-
-/* FRIENDS */
 
 function loadFriends(){
 
-let f = document.getElementById("friends")
+let f=document.getElementById("friends");
 
-f.innerHTML = ""
+f.innerHTML="";
 
-for(let name in friendsData){
+for(let name in friends){
 
-let d = document.createElement("div")
+let d=document.createElement("div");
 
-d.className="friend"
+d.className="friend";
 
-d.innerText=name
+d.innerText=name;
 
 d.onclick=function(){
 
-let p = prompt("Enter password")
+let p=prompt("Enter password");
 
 if(p===password){
 
-alert("Phone: "+friendsData[name])
+alert("Phone: "+friends[name]);
 
-}else{
+}
 
-alert("Try again")
+};
+
+f.appendChild(d);
 
 }
 
 }
-
-f.appendChild(d)
-
-}
-
-}
-
-/* COINS */
 
 function loadCoins(){
 
 db.ref("users/"+user+"/coins").on("value",snap=>{
 
-coins = snap.val() || 0
+coins=snap.val()||0;
 
-document.getElementById("coinCount").innerText = coins
+document.getElementById("coins").innerText=coins;
 
-})
+});
 
 }
-
-/* CHAT */
 
 function sendMessage(){
 
-let t = document.getElementById("msg").value
+let t=document.getElementById("msg").value;
 
-db.ref("messages").push({user:user,text:t})
+db.ref("messages").push({user:user,text:t});
 
 }
-
-/* LOAD CHAT */
 
 function loadMessages(){
 
 db.ref("messages").on("child_added",snap=>{
 
-let m = snap.val()
+let m=snap.val();
 
-let d = document.createElement("div")
+let d=document.createElement("div");
 
-d.innerText = m.user+" : "+m.text
+d.innerText=m.user+" : "+m.text;
 
-document.getElementById("messages").appendChild(d)
+document.getElementById("messages").appendChild(d);
 
-})
+});
 
 }
 
-/* PRIVATE CHAT */
-
 function loadPrivateFriends(){
 
-let s = document.getElementById("friendSelect")
+let s=document.getElementById("friendSelect");
 
-for(let n in friendsData){
+for(let n in friends){
 
-let o = document.createElement("option")
+let o=document.createElement("option");
 
-o.value=n
+o.value=n;
 
-o.text=n
+o.text=n;
 
-s.appendChild(o)
+s.appendChild(o);
 
 }
 
@@ -437,137 +398,135 @@ s.appendChild(o)
 
 function sendPrivate(){
 
-let f = document.getElementById("friendSelect").value
+let f=document.getElementById("friendSelect").value;
 
-let text = document.getElementById("privateMsg").value
+let text=document.getElementById("privateMsg").value;
 
-let id = [user,f].sort().join("_")
+let id=[user,f].sort().join("_");
 
-db.ref("privateChats/"+id).push({sender:user,text:text})
+db.ref("privateChats/"+id).push({sender:user,text:text});
 
 }
-
-/* GAME */
 
 function playGame(){
 
-coins += 10
+coins+=10;
 
-db.ref("users/"+user+"/coins").set(coins)
+db.ref("users/"+user+"/coins").set(coins);
 
-let d = document.createElement("div")
+let d=document.createElement("div");
 
-d.innerText = "You earned 10 coins"
+d.innerText="You earned 10 coins";
 
-document.getElementById("gameLog").appendChild(d)
+document.getElementById("gameLog").appendChild(d);
 
 }
-
-/* STORE */
 
 function buy(price,item){
 
-if(coins < price){
+if(coins<price){
 
-alert("Not enough coins")
+alert("Not enough coins");
 
-return
-
-}
-
-coins -= price
-
-db.ref("users/"+user+"/coins").set(coins)
-
-let d = document.createElement("div")
-
-d.innerText = "Purchased "+item
-
-document.getElementById("storeLog").appendChild(d)
+return;
 
 }
 
-/* BANK */
+coins-=price;
+
+db.ref("users/"+user+"/coins").set(coins);
+
+let d=document.createElement("div");
+
+d.innerText="Purchased "+item;
+
+document.getElementById("storeLog").appendChild(d);
+
+}
 
 function borrow(a){
 
-coins += a
+if(debt>0){
 
-db.ref("users/"+user+"/coins").set(coins)
+alert("Pay your debt first");
 
-let d = document.createElement("div")
-
-d.innerText = "Borrowed "+a
-
-document.getElementById("bankLog").appendChild(d)
+return;
 
 }
 
-function pay(a){
+coins+=a;
 
-if(coins < a){
+debt=a;
 
-alert("Not enough coins")
-
-return
+db.ref("users/"+user+"/coins").set(coins);
 
 }
 
-coins -= a
+function pay(){
 
-db.ref("users/"+user+"/coins").set(coins)
+if(debt===0){
 
-let d = document.createElement("div")
+alert("No debt");
 
-d.innerText = "Paid "+a
-
-document.getElementById("bankLog").appendChild(d)
+return;
 
 }
 
-/* MAIL */
+if(coins<debt){
+
+alert("Not enough coins");
+
+return;
+
+}
+
+coins-=debt;
+
+debt=0;
+
+db.ref("users/"+user+"/coins").set(coins);
+
+}
 
 function loadMail(){
 
 db.ref("mail/"+user).on("child_added",snap=>{
 
-let m = snap.val()
+let m=snap.val();
 
-let d = document.createElement("div")
+let d=document.createElement("div");
 
-d.innerText = m
+d.innerText=m;
 
-document.getElementById("mailBox").appendChild(d)
+document.getElementById("mailBox").appendChild(d);
 
-})
+});
 
 }
 
-/* FILMS */
-
-const films=["Avatar","Avengers","Batman","Spider Man","Inception","Interstellar"]
+const films=["Avatar","Avengers","Batman","Spider Man","Inception","Interstellar"];
 
 function searchFilm(){
 
-let s=document.getElementById("filmSearch").value.toLowerCase()
+let s=document.getElementById("filmSearch").value.toLowerCase();
 
-let box=document.getElementById("filmBox")
+let box=document.getElementById("filmBox");
 
-box.innerHTML=""
+box.innerHTML="";
 
 films.forEach(f=>{
 
 if(f.toLowerCase().includes(s)){
 
-let d=document.createElement("div")
+let d=document.createElement("div");
 
-d.innerText=f
+d.innerText=f;
 
-box.appendChild(d)
+box.appendChild(d);
 
 }
 
-})
+});
 
 }
 
