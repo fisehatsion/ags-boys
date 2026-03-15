@@ -1,1 +1,344 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>AGS Boys</title>
 
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js"></script>
+
+<style>
+
+body{
+font-family:Arial;
+background:#0b1d3a;
+color:white;
+text-align:center;
+}
+
+.page{
+display:none;
+padding:20px;
+}
+
+button{
+padding:10px;
+margin:5px;
+border-radius:6px;
+border:none;
+background:#2196f3;
+color:white;
+}
+
+input{
+padding:8px;
+margin:5px;
+}
+
+#chatBox{
+height:200px;
+overflow:auto;
+border:1px solid white;
+padding:10px;
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- LOGIN PAGE -->
+
+<div id="login" class="page" style="display:block">
+
+<h2>AGS Boys</h2>
+
+<input id="password" placeholder="Enter password"><br>
+
+<button onclick="login()">Enter</button>
+
+<br><br>
+
+<button onclick="forgetPassword()">Forget Password</button>
+
+</div>
+
+
+<!-- HOME -->
+
+<div id="home" class="page">
+
+<h2>Home</h2>
+
+<p>Coins: <span id="coins">0</span></p>
+
+<button onclick="openPage('chat')">Chat</button>
+
+<button onclick="openPage('games')">Games</button>
+
+<button onclick="openPage('store')">Store</button>
+
+<button onclick="openPage('bank')">Bank</button>
+
+<button onclick="openPage('mail')">Mail</button>
+
+</div>
+
+
+<!-- CHAT -->
+
+<div id="chat" class="page">
+
+<h2>Public Chat</h2>
+
+<div id="chatBox"></div>
+
+<input id="msg">
+
+<button onclick="sendMessage()">Send</button>
+
+<br><br>
+
+<button onclick="openPage('home')">Back</button>
+
+</div>
+
+
+<!-- GAMES -->
+
+<div id="games" class="page">
+
+<h2>Games</h2>
+
+<button onclick="playGame()">Play Number Game</button>
+
+<p id="gameResult"></p>
+
+<br>
+
+<button onclick="openPage('home')">Back</button>
+
+</div>
+
+
+<!-- STORE -->
+
+<div id="store" class="page">
+
+<h2>Store</h2>
+
+<p>Game AI Bots - 100 coins</p>
+<button onclick="buy(100)">Buy</button>
+
+<p>AI Chat Helper - 300 coins</p>
+<button onclick="buy(300)">Buy</button>
+
+<p>AI Film Search - 500 coins</p>
+<button onclick="buy(500)">Buy</button>
+
+<p>AI Chat System - 1000 coins</p>
+<button onclick="buy(1000)">Buy</button>
+
+<br><br>
+
+<button onclick="openPage('home')">Back</button>
+
+</div>
+
+
+<!-- BANK -->
+
+<div id="bank" class="page">
+
+<h2>Bank</h2>
+
+<button onclick="borrow()">Borrow Coins</button>
+
+<button onclick="openPage('home')">Back</button>
+
+</div>
+
+
+<!-- MAIL -->
+
+<div id="mail" class="page">
+
+<h2>Mail</h2>
+
+<div id="mailBox"></div>
+
+<button onclick="openPage('home')">Back</button>
+
+</div>
+
+
+
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getDatabase, ref, push, onChildAdded } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCB1Qor4UQePbWxweD9H6A2ubdt3mSuNIM",
+  authDomain: "ags-boys.firebaseapp.com",
+  databaseURL: "https://ags-boys-default-rtdb.firebaseio.com",
+  projectId: "ags-boys",
+  storageBucket: "ags-boys.firebasestorage.app",
+  messagingSenderId: "278332325347",
+  appId: "1:278332325347:web:7ba7ed1eb4125c085ef4d6"
+};
+
+const app = initializeApp(firebaseConfig);
+
+const db = getDatabase(app);
+
+
+let coins = 0;
+
+
+const phones = [
+
+"0922986741",
+"0900044774",
+"0910003855",
+"0904306090",
+"0920607048",
+"0913269364",
+"0913424637",
+"0982223246",
+"0911254265",
+"0946395152",
+"0996649990",
+"0913310424",
+"0911983651",
+"0911417142"
+
+];
+
+
+window.login=function(){
+
+let p=document.getElementById("password").value;
+
+if(p==="faimse@123"){
+
+openPage("home");
+
+}else{
+
+alert("Try again");
+
+}
+
+}
+
+
+window.forgetPassword=function(){
+
+let num=prompt("Enter phone number from AGS Boys");
+
+if(phones.includes(num)){
+
+alert("Phone verified. Your password is: faimse@123");
+
+}else{
+
+alert("Number not found");
+
+}
+
+}
+
+
+
+window.openPage=function(p){
+
+document.querySelectorAll(".page").forEach(x=>x.style.display="none");
+
+document.getElementById(p).style.display="block";
+
+}
+
+
+
+const chatRef=ref(db,"messages");
+
+window.sendMessage=function(){
+
+let msg=document.getElementById("msg").value;
+
+push(chatRef,{text:msg});
+
+document.getElementById("msg").value="";
+
+}
+
+
+
+onChildAdded(chatRef,data=>{
+
+let div=document.createElement("div");
+
+div.innerText=data.val().text;
+
+document.getElementById("chatBox").appendChild(div);
+
+});
+
+
+
+window.playGame=function(){
+
+let n=Math.floor(Math.random()*5);
+
+if(n===3){
+
+coins+=20;
+
+document.getElementById("gameResult").innerText="You win 20 coins";
+
+}else{
+
+document.getElementById("gameResult").innerText="Try again";
+
+}
+
+document.getElementById("coins").innerText=coins;
+
+}
+
+
+
+window.buy=function(cost){
+
+if(coins>=cost){
+
+coins-=cost;
+
+alert("Purchased");
+
+}else{
+
+alert("Not enough coins");
+
+}
+
+document.getElementById("coins").innerText=coins;
+
+}
+
+
+
+window.borrow=function(){
+
+coins+=25;
+
+alert("Borrowed 25 coins");
+
+document.getElementById("coins").innerText=coins;
+
+}
+
+</script>
+
+</body>
+</html>
